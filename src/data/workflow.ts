@@ -1,37 +1,32 @@
+/**
+ * The four steps of a working session. Numbered markers are used here, and
+ * only here, because this content genuinely is a sequence.
+ */
+
 export interface WorkflowStep {
-  number: string;
   title: string;
   description: string;
-  annotation: string;
 }
 
 export const workflowSteps: WorkflowStep[] = [
   {
-    number: "01",
-    title: "Upload",
+    title: "Load the page",
     description:
-      "Import a JPG, JPEG or PNG image of your document. Single page or a batch of pages.",
-    annotation: "Accepted: JPG · JPEG · PNG",
+      "Open a photo or a scan. Add the whole stack at once when the sheets share a layout.",
   },
   {
-    number: "02",
-    title: "Adjust",
+    title: "Mark the fields",
     description:
-      "Correct the image orientation, select or create a template, and define the extraction regions for each field.",
-    annotation: "Crop · Deskew · Rotate",
+      "Box the areas you want and name them. Straighten and sharpen the page if it came in crooked.",
   },
   {
-    number: "03",
-    title: "Extract & Verify",
+    title: "Check the reading",
     description:
-      "Tesseract OCR recognizes the text in each region. Inspect the results and correct any uncertain or flagged values.",
-    annotation: "OCR · Field review · Corrections",
+      "Anything doubtful is flagged. Correct it in place, before it reaches your spreadsheet.",
   },
   {
-    number: "04",
-    title: "Export",
+    title: "Save the sheet",
     description:
-      "Save the structured results as a CSV table or readable plain text. Your template is saved for future documents.",
-    annotation: "CSV · TXT · Save template",
+      "Write out CSV or text, and keep the template ready for the next batch.",
   },
 ];

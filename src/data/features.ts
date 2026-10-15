@@ -1,54 +1,58 @@
-import {
-  Crop,
-  Layers,
-  FileCode2,
-  Image,
-  ShieldCheck,
-  Download,
-} from "lucide-react";
-import type { LucideIcon } from "lucide-react";
+/**
+ * What the operator can change. Framed as controls they hold rather than
+ * features the product has, because the page's argument is that nothing is
+ * guessed on their behalf.
+ */
 
-export interface Feature {
-  icon: LucideIcon;
+export type ControlIcon =
+  | "region"
+  | "table"
+  | "template"
+  | "image"
+  | "validate"
+  | "export";
+
+export interface Control {
   title: string;
   description: string;
+  icon: ControlIcon;
 }
 
-export const features: Feature[] = [
+export const controls: Control[] = [
   {
-    icon: Crop,
-    title: "Adjustable Extraction Regions",
+    title: "Adjustable regions",
     description:
-      "Draw and resize extraction boxes directly on the document preview. Each region maps to a named field in your output.",
+      "Move and resize the box over any field. The reading updates as you drag it.",
+    icon: "region",
   },
   {
-    icon: Layers,
-    title: "Reusable Templates",
+    title: "Table recognition",
     description:
-      "Save field layouts and OCR settings as named templates. Apply the same template to every document of the same format.",
+      "Mark a table once and every printed row becomes a row in your spreadsheet.",
+    icon: "table",
   },
   {
-    icon: Image,
-    title: "Image Processing",
+    title: "Saved templates",
     description:
-      "Auto-crop, deskew, rotate and improve contrast before extraction. Better input images produce more accurate text output.",
+      "Keep a layout per sheet type and reuse it across the whole stack.",
+    icon: "template",
   },
   {
-    icon: FileCode2,
-    title: "Text Recognition",
+    title: "Straighten and sharpen",
     description:
-      "Extract printed text using Tesseract OCR. Configure language, character sets and confidence thresholds per field region.",
+      "Crop, deskew, lift contrast and clear speckle so faint photocopies still read.",
+    icon: "image",
   },
   {
-    icon: ShieldCheck,
-    title: "Data Validation",
+    title: "Range and total checks",
     description:
-      "Define rules for required fields, numeric ranges, totals and duplicate checks. Non-conforming values are flagged automatically.",
+      "Marks above the maximum, duplicate roll numbers and totals that do not add up get flagged.",
+    icon: "validate",
   },
   {
-    icon: Download,
-    title: "Export",
+    title: "Plain export formats",
     description:
-      "Export structured data as CSV or plain text as TXT. Column order matches your template field definitions.",
+      "CSV opens in Excel, Sheets or your school's own software. Text when you only need the words.",
+    icon: "export",
   },
 ];

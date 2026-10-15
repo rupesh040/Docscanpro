@@ -78,7 +78,6 @@ export function DocumentProcessingDiagram() {
             aria-label="Exploded diagram showing four document processing layers"
             role="img"
           >
-            {/* Layer 4 (bottom): Structured Data */}
             <motion.g
               variants={layerVariants(3)}
               initial="hidden"

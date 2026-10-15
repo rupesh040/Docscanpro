@@ -1,117 +1,225 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
 @import "tailwindcss";
 
-/* ─────────────────────────────────────────────
-   Design tokens (CSS variables)
-───────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════════
+   DocScanPro — design tokens
+
+   The page is built as a sheet passing under a scan head: graphite
+   "machine" bands where the software speaks, warm "paper" bands where
+   the document's own content lives.
+
+   Two typefaces only. Archivo carries display and body; IBM Plex Mono
+   appears ONLY where there is real data — table cells, field values,
+   CSV output, pixel coordinates, confidence scores. Never for labels,
+   buttons, navigation or prose.
+   ═══════════════════════════════════════════════════════════════════ */
+
 :root {
-  /* Fonts */
-  --font-inter: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-newsreader: "Newsreader", "Charter", "Bitstream Charter", Cambria, Georgia, serif;
-  --font-jetbrains: "JetBrains Mono", "Cascadia Code", "Consolas", monospace;
+  color-scheme: dark;
 
-  /* Backgrounds */
-  --bg:        #0B0B0A;
-  --bg-2:      #111110;
-  --surface:   #151514;
+  /* ── machine ── */
+  --graphite:   #15181C;  /* base: cool scanner housing, not tinted black */
+  --graphite-2: #1C2025;  /* raised panels, app chrome */
+  --graphite-3: #23282E;  /* toolbars, insets */
+  --rule:       #2E343B;  /* hairlines and table rules */
+  --chalk:      #E8E6E1;  /* primary text on machine */
+  --chalk-2:    #9AA0A6;  /* secondary text — 6.1:1 on --graphite */
+  --chalk-3:    #767D84;  /* tertiary text — 4.6:1 on --graphite */
 
-  /* Text */
-  --text:      #F3F0EA;
-  --text-2:    #A6A29B;
-  --text-3:    #8A877F;   /* lightened from #77746F for AA contrast on --bg */
+  /* ── paper ── */
+  --paper:      #F4F1E8;  /* the sheet: cheap bond under a scanner lamp */
+  --paper-2:    #EAE6DA;  /* highlighted column */
+  --paper-rule: #D8D3C4;  /* printed rules */
+  --paper-ink:  #9E9686;  /* heavy printed rules, seals */
+  --ink:        #1A1D21;  /* text on paper */
+  --ink-2:      #55585C;  /* secondary text on paper — 7.0:1 on --paper */
+  --ink-accent: #A8401B;  /* accent that still passes on paper — 5.3:1 */
 
-  /* Borders */
-  --border:    #2A2926;
+  /* ── signal: each of these carries meaning, not mood ── */
+  --signal:      #F2683C;  /* brand, CTA, and "this region is active" */
+  --signal-hi:   #FF7A50;
+  --signal-dim:  rgba(242, 104, 60, 0.13);
+  --flag:        #D93F3F;  /* red ink: low confidence, out of range */
+  --flag-dim:    rgba(217, 63, 63, 0.12);
+  --flag-text:   #FFB3B3;
+  --verified:    #2F9E6E;  /* checked and within range */
+  --verified-text: #8FD9BA;
 
-  /* Accent */
-  --accent:       #FF7847;
-  --accent-hover: #FF946D;
+  /* ── motion ── */
+  --ease:    cubic-bezier(0.22, 1, 0.36, 1);
+  --t-fast:  0.16s;
+  --t-base:  0.22s;
 
-  /* Grid overlay */
-  --grid: rgba(255, 255, 255, 0.055);
+  /* ── type ── */
+  --font-archivo:   "Archivo", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-plex-mono: "IBM Plex Mono", "Cascadia Mono", Consolas, "Courier New", monospace;
 
-  /* Motion */
-  --ease-default: cubic-bezier(0.22, 1, 0.36, 1);
-  --dur-hover:    0.2s;
-  --dur-reveal:   0.6s;
-  --dur-hero:     0.75s;
+  --measure: 62ch;
+
+  /* ── compatibility aliases ──
+     The /service workspace page and a few retired components still reference
+     the previous token names. Mapping them onto the new palette keeps those
+     screens coherent without rewriting them. Prefer the names above in new
+     code; these exist only so nothing is left stranded. */
+  --bg:           var(--graphite);
+  --bg-2:         var(--graphite-2);
+  --surface:      var(--graphite-3);
+  --text:         var(--chalk);
+  --text-2:       var(--chalk-2);
+  --text-3:       var(--chalk-3);
+  --border:       var(--rule);
+  --accent:       var(--signal);
+  --accent-hover: var(--signal-hi);
+  --grid:         rgba(255, 255, 255, 0.045);
 }
 
-/* ─────────────────────────────────────────────
-   Tailwind v4 theme extensions (@theme inline)
-───────────────────────────────────────────── */
 @theme inline {
-  --color-background: var(--bg);
-  --color-foreground:  var(--text);
+  --color-background: var(--graphite);
+  --color-foreground: var(--chalk);
 
-  --font-sans:  var(--font-inter);
-  --font-serif: var(--font-newsreader);
-  --font-mono:  var(--font-jetbrains);
+  --font-sans: var(--font-archivo);
+  --font-mono: var(--font-plex-mono);
+  /* No serif in the new system — anything still asking for one gets Archivo. */
+  --font-serif: var(--font-archivo);
 }
 
-/* ─────────────────────────────────────────────
-   Base
-───────────────────────────────────────────── */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
+/* ═════════════════════════ base ═════════════════════════
+
+   Everything here is wrapped in @layer. Tailwind v4 emits its utilities
+   inside `@layer utilities`, and an UNLAYERED rule outranks any layered one
+   regardless of specificity — so a bare `a { color: inherit }` would quietly
+   beat `text-[#17110D]` on every button, and a bare `:focus-visible` outline
+   would beat `focus-visible:outline-white`. Layering keeps utilities winning,
+   which is what you want from a utility framework. */
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--graphite);
+    color: var(--chalk);
+    font-family: var(--font-archivo);
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  /* Archivo is a variable font with a width axis. Display sizes get a wider
+     cut so headlines read like a blown-up form header, not body copy. */
+  h1, h2, h3, h4 {
+    margin: 0;
+    font-weight: 600;
+    line-height: 1.04;
+    letter-spacing: -0.02em;
+    font-stretch: 112%;
+  }
+
+  p { margin: 0; }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  :focus { outline: none; }
+
+  :focus-visible {
+    outline: 2px solid var(--signal);
+    outline-offset: 3px;
+  }
+
+  /* Tabular figures wherever a number is compared against another number. */
+  .font-mono,
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  input[type="range"] {
+    appearance: none;
+    width: 100%;
+    height: 2px;
+    background: var(--rule);
+    border-radius: 2px;
+    cursor: pointer;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    width: 13px;
+    height: 13px;
+    border-radius: 50%;
+    background: var(--signal);
+    border: 2px solid var(--graphite-2);
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    width: 13px;
+    height: 13px;
+    border: 2px solid var(--graphite-2);
+    border-radius: 50%;
+    background: var(--signal);
+  }
 }
 
-html {
-  scroll-behavior: smooth;
+/* ═════════════════════════ components ═════════════════════════ */
+
+@layer components {
+  /* Page gutter. On desktop the left gutter widens to clear the scan rail. */
+  .wrap {
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-inline: 24px;
+  }
+
+  @media (min-width: 1024px) {
+    .wrap {
+      padding-left: 84px;
+      padding-right: 24px;
+    }
+  }
 }
 
-body {
-  background-color: var(--bg);
-  color: var(--text);
-  font-family: var(--font-inter), system-ui, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
+/* ═════════════════════════ reduced motion ═════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
 }
 
-/* Suppress default focus ring; rely on focus-visible */
-:focus {
-  outline: none;
+/* ═════════════════════════ the one load animation ═════════════════════════
+   A single orchestrated moment: the scan head crossing the sample sheet once
+   on load. There are no scroll-reveal animations anywhere on the page — every
+   other movement answers something the visitor did. */
+
+@keyframes scan-sweep {
+  0%   { transform: translateY(-130px); opacity: 0; }
+  12%  { opacity: 1; }
+  88%  { opacity: 1; }
+  100% { transform: translateY(540px); opacity: 0; }
 }
 
-:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
+.scan-sweep {
+  animation: scan-sweep 1.5s var(--ease) 0.35s both;
 }
 
-/* Serif elements */
-h1,
-.font-serif {
-  font-family: var(--font-newsreader), Georgia, serif;
-}
-
-/* Mono elements */
-.font-mono {
-  font-family: var(--font-jetbrains), "Courier New", monospace;
-}
-
-/* Screen-reader only utility */
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border-width: 0;
-}
-
-.focus\:not-sr-only:focus {
-  position: static;
-  width: auto;
-  height: auto;
-  padding: revert;
-  margin: revert;
-  overflow: visible;
-  clip: auto;
-  white-space: normal;
+@media (prefers-reduced-motion: reduce) {
+  .scan-sweep { display: none; }
 }

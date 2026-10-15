@@ -1,81 +1,53 @@
-"use client";
-
-import { useState, useCallback, useRef } from "react";
 import { faqs } from "@/data/faqs";
-import { FAQAccordionItem } from "@/components/ui/FAQItem";
-import { Eyebrow } from "@/components/ui/Eyebrow";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { Reveal } from "@/components/motion/Reveal";
 
+/**
+ * A ruled register on paper. Built on native <details> so it opens without
+ * JavaScript, is keyboard operable for free, and is findable by the browser's
+ * own in-page search.
+ *
+ * The numbers here are reference marks for a register, not a sequence — they
+ * let someone point at "question 3" rather than implying an order.
+ */
 export function FAQ() {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-
-  const toggle = useCallback((index: number) => {
-    setOpenIndex((prev) => (prev === index ? null : index));
-  }, []);
-
-  /** Arrow key navigation between FAQ headers */
-  const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent, index: number) => {
-      if (!containerRef.current) return;
-      const buttons = Array.from(
-        containerRef.current.querySelectorAll<HTMLButtonElement>("button[aria-expanded]")
-      );
-      if (e.key === "ArrowDown") {
-        e.preventDefault();
-        buttons[(index + 1) % buttons.length]?.focus();
-      } else if (e.key === "ArrowUp") {
-        e.preventDefault();
-        buttons[(index - 1 + buttons.length) % buttons.length]?.focus();
-      }
-    },
-    []
-  );
-
   return (
     <section
-      id="faq"
-      className="py-20 lg:py-28 bg-[var(--bg)] border-t border-[var(--border)]"
+      id="questions"
+      className="bg-[var(--paper)] py-[84px] text-[var(--ink)] lg:py-[104px]"
       aria-labelledby="faq-heading"
     >
-      <div className="max-w-[1440px] mx-auto px-6">
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-12 lg:gap-20">
-          {/* Left: heading */}
-          <Reveal>
-            <div className="flex flex-col gap-4 lg:sticky lg:top-24">
-              <Eyebrow>Questions &amp; Answers</Eyebrow>
-              <SectionHeading id="faq-heading">
-                A few things
-                <br />
-                worth knowing.
-              </SectionHeading>
-            </div>
-          </Reveal>
+      <div className="wrap max-w-[860px]">
+        <div className="mb-[38px] max-w-[560px]">
+          <SectionHeading id="faq-heading">
+            Questions people ask first.
+          </SectionHeading>
+        </div>
 
-          {/* Right: accordion */}
-          <Reveal delay={0.1}>
-            <div
-              ref={containerRef}
-              className="flex flex-col border-t border-[var(--border)]"
-              role="list"
+        <div className="border-t-[1.5px] border-[var(--paper-ink)]">
+          {faqs.map((faq, i) => (
+            <details
+              key={faq.question}
+              open={i === 0}
+              className="group border-b border-[var(--paper-rule)]"
             >
-              {faqs.map((item, i) => (
-                <div
-                  key={i}
-                  role="listitem"
-                  onKeyDown={(e) => handleKeyDown(e, i)}
+              <summary className="flex cursor-pointer list-none items-baseline gap-4 py-[17px] text-[15.5px] font-medium text-[var(--ink)] [&::-webkit-details-marker]:hidden">
+                <span className="w-[22px] flex-none font-mono text-[11px] text-[#8A8477]">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <span className="flex-1">{faq.question}</span>
+                <span
+                  aria-hidden="true"
+                  className="ml-auto flex-none text-[19px] leading-none text-[var(--ink-accent)]"
                 >
-                  <FAQAccordionItem
-                    item={item}
-                    index={i}
-                    isOpen={openIndex === i}
-                    onToggle={() => toggle(i)}
-                  />
-                </div>
-              ))}
-            </div>
-          </Reveal>
+                  <span className="group-open:hidden">+</span>
+                  <span className="hidden group-open:inline">–</span>
+                </span>
+              </summary>
+              <p className="max-w-[70ch] pb-[18px] pl-[38px] text-[13.5px] leading-[1.68] text-[var(--ink-2)]">
+                {faq.answer}
+              </p>
+            </details>
+          ))}
         </div>
       </div>
     </section>

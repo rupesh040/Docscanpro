@@ -1,49 +1,45 @@
-export interface DocumentType {
+/**
+ * Sheet families, grouped into four rather than listed as eight near-identical
+ * cards. Each has a paper thumbnail drawn from its real structure — a ruled
+ * table, OMR bubbles, an invoice total block, a stack of form rows.
+ */
+
+export type ThumbKind = "table" | "bubbles" | "invoice" | "form";
+
+export interface SheetFamily {
   title: string;
   description: string;
-  /** SVG symbol identifier — rendered inline in the illustration component */
-  symbol: "marksheet" | "answer-sheet" | "invoice" | "certificate" | "application-form" | "receipt" | "attendance" | "custom";
+  meta: string;
+  thumb: ThumbKind;
 }
 
-export const documentTypes: DocumentType[] = [
+export const sheetFamilies: SheetFamily[] = [
   {
     title: "Marksheets",
-    description: "Extract student name, roll number, subject marks and totals.",
-    symbol: "marksheet",
+    description:
+      "Candidate names, roll numbers, subject rows, totals and grades.",
+    meta: "ruled table",
+    thumb: "table",
   },
   {
-    title: "Structured Answer Sheets",
-    description: "Read question numbers, marks and OMR bubble selections.",
-    symbol: "answer-sheet",
+    title: "Answer sheets",
+    description:
+      "Question numbers, filled bubbles and the marks written beside them.",
+    meta: "OMR + marks",
+    thumb: "bubbles",
   },
   {
-    title: "Invoices & Bills",
-    description: "Extract invoice number, line items, quantities and totals.",
-    symbol: "invoice",
+    title: "Invoices and bills",
+    description:
+      "Invoice number, date, line items, quantities, tax and payable total.",
+    meta: "line items",
+    thumb: "invoice",
   },
   {
-    title: "Certificates",
-    description: "Digitize key details from award and completion certificates.",
-    symbol: "certificate",
-  },
-  {
-    title: "Application Forms",
-    description: "Extract structured fields from any application or enrolment form.",
-    symbol: "application-form",
-  },
-  {
-    title: "Receipts",
-    description: "Read payment details, transaction dates and amounts.",
-    symbol: "receipt",
-  },
-  {
-    title: "Attendance Sheets",
-    description: "Convert attendance records to a searchable digital format.",
-    symbol: "attendance",
-  },
-  {
-    title: "Custom Documents",
-    description: "Define your own template for any consistently formatted document.",
-    symbol: "custom",
+    title: "Forms and registers",
+    description:
+      "Application forms, attendance registers, receipts and certificates.",
+    meta: "build your own",
+    thumb: "form",
   },
 ];

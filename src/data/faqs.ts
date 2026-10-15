@@ -3,40 +3,45 @@ export interface FAQItem {
   answer: string;
 }
 
+/**
+ * Answers are deliberately plain about what the software does not do —
+ * handwriting in particular. Overstating it here is how a results-week
+ * operator ends up not trusting anything else on the page.
+ */
 export const faqs: FAQItem[] = [
   {
-    question: "Which image formats are supported?",
+    question: "Does my data go anywhere?",
     answer:
-      "DocScanPro accepts JPG, JPEG and PNG images. For best results, use images with at least 150 DPI and good contrast between text and background.",
+      "No. The reading happens in the app on your own machine. There is no account, no sync and no upload step, and the software works with the network switched off.",
   },
   {
-    question: "Can I scan different document layouts?",
+    question: "Can it read handwriting?",
     answer:
-      "Yes. Each document type can have its own saved template. You define the extraction regions and field names for each layout, then reuse the template across all documents of that type.",
+      "Not reliably, and it does not pretend to. The OCR is built for clearly printed and typed text. Handwritten or cursive entries may read incorrectly, so treat them as something to check by hand rather than something to trust.",
   },
   {
-    question: "How do custom templates work?",
+    question: "Which image formats can I open?",
     answer:
-      "You open a sample document, draw extraction boxes over each field you want to capture, name the fields, and set per-field OCR options. Save the template and apply it to every subsequent document of the same format.",
+      "JPG, JPEG and PNG. Aim for at least 150 DPI with good contrast between the text and the paper — a flatbed scan beats a phone photo taken at an angle.",
   },
   {
-    question: "Does the software use AI or machine learning?",
+    question: "Do I have to set up every sheet again?",
     answer:
-      "No. DocScanPro uses classical image processing (deskewing, contrast enhancement, noise reduction) combined with Tesseract OCR for text recognition and rule-based validation for data checking. It does not use generative AI or any neural-network model.",
-  },
-  {
-    question: "Can I export data to CSV?",
-    answer:
-      "Yes. CSV export is the primary structured format. Each row corresponds to one extracted document; columns match your template field names. TXT export writes a readable plain-text version of the same data.",
-  },
-  {
-    question: "Can it recognize handwritten answers?",
-    answer:
-      "Reliable handwriting recognition is not currently supported. Tesseract OCR performs best on clearly printed text. Handwritten or cursive content may produce inaccurate results and should be reviewed manually.",
+      "Only the first one. Save it as a template and the rest of the stack reuses the same regions, field names and checks.",
   },
   {
     question: "What happens when a field cannot be read?",
     answer:
-      "Fields where the OCR confidence falls below the configured threshold are flagged with a 'Needs review' status. You can inspect each flagged field in the review panel and enter the correct value before exporting.",
+      "Any field whose confidence falls below your threshold is marked for review rather than written out silently. You see it in the field panel, correct it in place, and the correction goes into the export.",
+  },
+  {
+    question: "Does it use AI?",
+    answer:
+      "No. It is classical image processing — deskew, contrast, noise removal — with Tesseract OCR for recognition and rule-based checks for validation. There is no neural network and no model to train.",
+  },
+  {
+    question: "Will it run on an old office computer?",
+    answer:
+      "Yes. It needs no graphics card and no internet connection, so a machine that runs Windows 10 comfortably will run this.",
   },
 ];

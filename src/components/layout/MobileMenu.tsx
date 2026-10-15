@@ -1,150 +1,98 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
+import { navSections, scrollToSection } from "@/config/nav";
+import { Button, WindowsMark } from "@/components/ui/Button";
 import site from "@/config/site";
 
 interface MobileMenuProps {
-  isOpen: boolean;
+  open: boolean;
   onClose: () => void;
-  links: { label: string; href: string }[];
-  activeSection: string;
-  onLinkClick: (e: React.MouseEvent<HTMLAnchorElement>, href: string) => void;
+  active: string;
 }
 
-export function MobileMenu({
-  isOpen,
-  onClose,
-  links,
-  activeSection,
-  onLinkClick,
-}: MobileMenuProps) {
-  const closeRef = useRef<HTMLButtonElement>(null);
+export function MobileMenu({ open, onClose, active }: MobileMenuProps) {
+  const panelRef = useRef<HTMLDivElement>(null);
 
-  // Focus management
+  /* Escape closes, and focus moves into the panel when it opens. */
   useEffect(() => {
-    if (isOpen) {
-      setTimeout(() => closeRef.current?.focus(), 50);
-    }
-  }, [isOpen]);
+    if (!open) return;
 
-  // Close on Escape
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isOpen) onClose();
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
     };
-    document.addEventListener("keydown", handler);
-    return () => document.removeEventListener("keydown", handler);
-  }, [isOpen, onClose]);
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    panelRef.current?.querySelector<HTMLElement>("a, button")?.focus();
 
-  // Prevent body scroll
-  useEffect(() => {
-    document.body.style.overflow = isOpen ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
-  }, [isOpen]);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [open, onClose]);
+
+  if (!open) return null;
+
+  const go = (id: string) => {
+    onClose();
+    // Let the panel unmount before scrolling, so the measurement is correct.
+    window.requestAnimationFrame(() => scrollToSection(id));
+  };
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <>
-          {/* Backdrop */}
-          <motion.div
-            key="backdrop"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-[60] bg-black/60 md:hidden"
+    <div
+      className="fixed inset-0 z-[100] bg-[var(--graphite)]/95 backdrop-blur-md min-[860px]:hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Navigation"
+    >
+      <div ref={panelRef} className="flex h-full flex-col px-6 py-5">
+        <div className="flex items-center justify-between">
+          <span className="text-[15px] font-semibold">
+            DocScan<span className="text-[var(--signal)]">Pro</span>
+          </span>
+          <button
+            type="button"
             onClick={onClose}
-            aria-hidden="true"
-          />
-
-          {/* Panel */}
-          <motion.div
-            id="mobile-menu"
-            key="panel"
-            initial={{ x: "100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "100%" }}
-            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="fixed top-0 right-0 bottom-0 z-[70] w-72 bg-[var(--bg-2)] border-l border-[var(--border)] flex flex-col md:hidden"
-            role="dialog"
-            aria-modal="true"
-            aria-label="Navigation menu"
+            aria-label="Close navigation"
+            className="-mr-2 p-2 text-[var(--chalk-2)] hover:text-[var(--chalk)]"
           >
-            <div className="flex items-center justify-between px-6 h-[70px] border-b border-[var(--border)]">
-              <span className="font-mono text-[11px] tracking-[0.18em] uppercase text-[var(--text-3)]">
-                Menu
-              </span>
+            <X size={20} />
+          </button>
+        </div>
+
+        <ul className="mt-10 flex flex-col">
+          {navSections.map((section) => (
+            <li key={section.id}>
               <button
-                ref={closeRef}
-                onClick={onClose}
-                className="text-[var(--text-2)] hover:text-[var(--text)] p-2 -mr-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
-                aria-label="Close navigation menu"
+                type="button"
+                onClick={() => go(section.id)}
+                aria-current={active === section.id ? "true" : undefined}
+                className={`w-full border-b border-[var(--rule)] py-4 text-left text-[19px] ${
+                  active === section.id ? "text-[var(--signal)]" : "text-[var(--chalk)]"
+                }`}
               >
-                <X size={18} />
+                {section.label}
               </button>
-            </div>
+            </li>
+          ))}
+        </ul>
 
-            <nav aria-label="Mobile navigation" className="flex-1 overflow-y-auto">
-              <ul className="py-4">
-                {links.map((link, i) => {
-                  const isActive = activeSection === link.href.slice(1);
-                  return (
-                    <motion.li
-                      key={link.href}
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{
-                        delay: 0.05 + i * 0.06,
-                        duration: 0.35,
-                        ease: [0.22, 1, 0.36, 1],
-                      }}
-                    >
-                      <a
-                        href={link.href}
-                        onClick={(e) => {
-                          onLinkClick(e, link.href);
-                          onClose();
-                        }}
-                        className={`block px-6 py-4 font-mono text-[12px] tracking-[0.18em] uppercase border-b border-[var(--border)] transition-colors min-h-[56px] flex items-center focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)] ${
-                          isActive
-                            ? "text-[var(--accent)]"
-                            : "text-[var(--text-2)] hover:text-[var(--text)]"
-                        }`}
-                        aria-current={isActive ? "true" : undefined}
-                      >
-                        {link.label}
-                      </a>
-                    </motion.li>
-                  );
-                })}
-              </ul>
-            </nav>
-
-            <div className="p-6 border-t border-[var(--border)]">
-              {site.downloadUrl ? (
-                <a
-                  href={site.downloadUrl}
-                  className="flex items-center justify-center gap-2 w-full font-mono text-[11px] tracking-[0.14em] uppercase bg-[var(--accent)] text-[#0B0B0A] px-5 py-3.5 rounded-sm hover:bg-[var(--accent-hover)] transition-colors min-h-[44px]"
-                >
-                  Download ↓
-                </a>
-              ) : (
-                <button
-                  disabled
-                  aria-disabled="true"
-                  title="Download link not configured"
-                  className="flex items-center justify-center gap-2 w-full font-mono text-[11px] tracking-[0.14em] uppercase border border-[var(--border)] text-[var(--text-3)] px-5 py-3.5 rounded-sm opacity-50 cursor-not-allowed min-h-[44px]"
-                >
-                  Download ↓
-                </button>
-              )}
-            </div>
-          </motion.div>
-        </>
-      )}
-    </AnimatePresence>
+        <div className="mt-auto">
+          <Button
+            as="a"
+            href={site.downloadUrl ?? "#download"}
+            disabled={!site.downloadUrl}
+            disabledReason="The download link has not been configured yet."
+            className="w-full"
+            onClick={onClose}
+          >
+            <WindowsMark />
+            Download for Windows
+          </Button>
+        </div>
+      </div>
+    </div>
   );
 }

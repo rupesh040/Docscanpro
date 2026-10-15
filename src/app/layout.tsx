@@ -1,39 +1,39 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 
-/* ─── SEO metadata ─── */
 export const metadata: Metadata = {
-  title: "DocScanPro — Document Scanner & Data Extraction",
+  title: "DocScanPro — turn scanned marksheets and forms into spreadsheets",
   description:
-    "Turn marksheets, invoices, forms and other documents into clean, structured digital data. Configurable OCR extraction, reusable templates, CSV and TXT export.",
+    "Draw a box around the fields you need and DocScanPro reads them into a spreadsheet. Marksheets, answer sheets, invoices and forms, read on your own machine with no account and no upload.",
   keywords: [
     "document scanner",
     "OCR",
+    "marksheet to Excel",
     "data extraction",
     "CSV export",
     "Tesseract",
-    "marksheet digitizer",
+    "offline OCR",
     "invoice scanner",
-    "offline document processing",
+    "answer sheet reader",
   ],
   openGraph: {
-    title: "DocScanPro — Document Scanner & Data Extraction",
+    title: "DocScanPro — turn scanned marksheets and forms into spreadsheets",
     description:
-      "Scan, extract, review and export document data through a configurable workflow. No cloud dependency.",
+      "Box the fields you need, check the reading, export a spreadsheet. Runs entirely on your own machine.",
     type: "website",
     locale: "en_US",
     siteName: "DocScanPro",
   },
   twitter: {
     card: "summary_large_image",
-    title: "DocScanPro — Document Scanner & Data Extraction",
+    title: "DocScanPro — turn scanned marksheets and forms into spreadsheets",
     description:
-      "Turn scanned documents into structured data with configurable OCR and CSV export.",
+      "Box the fields you need, check the reading, export a spreadsheet. No account, no upload.",
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0B0B0A",
+  themeColor: "#15181C",
   width: "device-width",
   initialScale: 1,
 };
@@ -45,7 +45,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="min-h-screen flex flex-col antialiased bg-[var(--bg)] text-[var(--text)]">
+      <body className="flex min-h-screen flex-col bg-[var(--graphite)] text-[var(--chalk)] antialiased">
         {children}
       </body>
     </html>
